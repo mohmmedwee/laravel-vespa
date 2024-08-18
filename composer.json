@@ -1,5 +1,5 @@
 {
-  "name": "your-vendor/laravel-vespa",
+  "name": "ostah/laravel-vespa",
   "description": "A Laravel package for integrating with Vespa",
   "type": "library",
   "license": "MIT",
