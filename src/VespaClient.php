@@ -66,6 +66,43 @@ class VespaClient
         $this->language = $language;
     }
 
+
+    // Create or Deploy a Vespa Application
+    public function createApplication($applicationPackagePath)
+    {
+        // Ensure the application package path exists
+        if (!file_exists($applicationPackagePath)) {
+            throw new \Exception("Application package not found at: {$applicationPackagePath}");
+        }
+
+        // Prepare the application
+        $prepareResponse = $this->performRequestWithRetry(
+            'post',
+            "{$this->vespaUrl}/application/v2/tenant/default/session",
+            ['path' => $applicationPackagePath]
+        );
+
+        // Extract session ID from the prepare response
+        $sessionId = $prepareResponse->json()['session-id'] ?? null;
+        if (!$sessionId) {
+            throw new \Exception("Failed to obtain session ID during application preparation.");
+        }
+
+        // Activate the application
+        $activateResponse = $this->performRequestWithRetry(
+            'put',
+            "{$this->vespaUrl}/application/v2/tenant/default/session/{$sessionId}/active"
+        );
+
+        if ($activateResponse->successful()) {
+            Log::info("Application successfully deployed with session ID {$sessionId}");
+            return $activateResponse->json();
+        } else {
+            throw new \Exception("Failed to activate the application: " . $activateResponse->body());
+        }
+    }
+
+
     // Retry Logic with Exponential Backoff
     public function performRequestWithRetry($method, $url, $body = [], $retryCount = 3)
     {

@@ -1,0 +1,9 @@
+<services version="1.0">
+    <container id="default" version="1.0">
+        <document-api />
+        <search />
+        <http>
+            <server id="default" port="8080" />
+        </http>
+    </container>
+</services>

@@ -1,0 +1,10 @@
+search my_schema {
+    document my_schema {
+        field title type string {
+            indexing: summary | index
+        }
+        field content type string {
+            indexing: summary | index
+        }
+    }
+}
