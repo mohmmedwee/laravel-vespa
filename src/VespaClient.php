@@ -51,12 +51,13 @@ class VespaClient
         $this->apiKey = $apiKey;
     }
 
-    protected function withAuthentication($request)
+    protected function withAuthentication($method, $url, $body = [])
     {
-        if ($this->apiKey) {
-            return $request->withHeaders(['Authorization' => "Bearer {$this->apiKey}"]);
-        }
-        return $request;
+        $request = Http::withHeaders([
+            'Authorization' => "Bearer {$this->apiKey}",
+        ]);
+
+        return $request->$method($url, $body);
     }
 
     // Internationalization
@@ -71,7 +72,7 @@ class VespaClient
         $attempt = 0;
         while ($attempt < $retryCount) {
             try {
-                $response = $this->withAuthentication(Http::$method($url, $body));
+                $response = $this->withAuthentication($method, $url, $body);
                 if ($response->successful()) {
                     return $response;
                 }
