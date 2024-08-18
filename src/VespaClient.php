@@ -5,31 +5,29 @@ namespace YourVendor\Vespa;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
 
 class VespaClient
 {
-
     protected $vespaUrl;
-    protected $plugins =  [];
-    protected $apiKey ;
+    protected $plugins = [];
+    protected $apiKey;
     protected $language;
     protected $rateLimit;
-    protected $rateLimitCacheKey ;
-    protected $throttleLimit ;
-    protected $throttleCacheKey ;
+    protected $rateLimitCacheKey;
+    protected $throttleLimit;
+    protected $throttleCacheKey;
 
     public function __construct()
     {
-
         $this->vespaUrl = config('vespa.url');
         $this->apiKey = config('vespa.api_key');
-        $this->language =  config('vespa.language');
+        $this->language = config('vespa.language');
         $this->rateLimit = config('vespa.rate_limit'); // Max requests per minute
         $this->rateLimitCacheKey = config('vespa.rate_limit');
         $this->throttleLimit = config('vespa.throttle_limit'); // Max simultaneous requests
-        $this->throttleCacheKey =  config('vespa.throttle_limit');
+        $this->throttleCacheKey = config('vespa.throttle_limit');
     }
+
     // Plugin Registration
     public function registerPlugin($plugin, $priority = 0)
     {
@@ -96,23 +94,23 @@ class VespaClient
     // Rate Limiting
     protected function rateLimitCheck()
     {
-        $count = Redis::get($this->rateLimitCacheKey, 0);
+        $count = Cache::get($this->rateLimitCacheKey, 0);
         if ($count >= $this->rateLimit) {
             throw new \Exception("Rate limit exceeded. Please try again later.");
         }
-        Redis::incr($this->rateLimitCacheKey);
-        Redis::expire($this->rateLimitCacheKey, 60); // Expire the key after 60 seconds
+        Cache::increment($this->rateLimitCacheKey);
+        Cache::put($this->rateLimitCacheKey, $count + 1, 60); // Expire the key after 60 seconds
     }
 
     // Throttling
     protected function throttleCheck()
     {
-        $count = Redis::get($this->throttleCacheKey, 0);
+        $count = Cache::get($this->throttleCacheKey, 0);
         if ($count >= $this->throttleLimit) {
             throw new \Exception("Too many requests. Please try again later.");
         }
-        Redis::incr($this->throttleCacheKey);
-        Redis::expire($this->throttleCacheKey, 60); // Expire the key after 60 seconds
+        Cache::increment($this->throttleCacheKey);
+        Cache::put($this->throttleCacheKey, $count + 1, 60); // Expire the key after 60 seconds
     }
 
     // Search with Advanced Capabilities
@@ -144,7 +142,7 @@ class VespaClient
             'response' => $response->json(),
         ]);
 
-        Redis::decr($this->throttleCacheKey);
+        Cache::decrement($this->throttleCacheKey);
         return $response->json();
     }
 
@@ -391,7 +389,7 @@ class VespaClient
             'response' => $response->json(),
         ]);
 
-        Redis::decr($this->throttleCacheKey);
+        Cache::decrement($this->throttleCacheKey);
         return $response->json();
     }
 
