@@ -22,7 +22,7 @@ class VespaServiceProvider extends ServiceProvider
     {
         // Merge the default configuration with the user's configuration
         $this->mergeConfigFrom(
-            __DIR__.'/../Config/vespa.php', 'vespa'
+            __DIR__.'/Config/vespa.php', 'vespa'
         );
 
         // Register the VespaClient as a singleton in the service container
@@ -44,7 +44,7 @@ class VespaServiceProvider extends ServiceProvider
         // Publish the configuration file if running in the console
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../Config/vespa.php' => config_path('vespa.php'),
+                __DIR__.'/Config/vespa.php' => config_path('vespa.php'),
             ], 'config');
 
             // Register Artisan commands if any
