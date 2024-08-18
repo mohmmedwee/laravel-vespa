@@ -70,16 +70,19 @@ class VespaClient
     // Create or Deploy a Vespa Application
     public function createApplication($applicationPackagePath)
     {
-        // Ensure the application package path exists
+        // Ensure the application package file exists
         if (!file_exists($applicationPackagePath)) {
             throw new \Exception("Application package not found at: {$applicationPackagePath}");
         }
 
-        // Prepare the application
+        // Prepare the application (upload the ZIP file)
         $prepareResponse = $this->performRequestWithRetry(
             'post',
             "{$this->vespaUrl}/application/v2/tenant/default/session",
-            ['path' => $applicationPackagePath]
+            [
+                'headers' => ['Content-Type' => 'application/zip'],
+                'body' => file_get_contents($applicationPackagePath)
+            ]
         );
 
         // Extract session ID from the prepare response
