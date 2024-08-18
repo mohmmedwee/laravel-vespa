@@ -1,0 +1,23 @@
+[
+  {
+    "put": "id:my_schema:my_schema::1",
+    "fields": {
+      "title": "First Document",
+      "content": "This is the content of the first document."
+    }
+  },
+  {
+    "put": "id:my_schema:my_schema::2",
+    "fields": {
+      "title": "Second Document",
+      "content": "This is the content of the second document."
+    }
+  },
+  {
+    "put": "id:my_schema:my_schema::3",
+    "fields": {
+      "title": "Third Document",
+      "content": "This is the content of the third document."
+    }
+  }
+]
