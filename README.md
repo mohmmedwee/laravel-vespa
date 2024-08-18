@@ -24,7 +24,7 @@ To get started with the Laravel Vespa Client, you'll need to follow these steps:
 1. **Install the package via Composer:**
 
    ```bash
-   composer require your-vendor/vespa-client
+   composer require ostah/laravel-vespa
    ```
 
 2. **Publish the configuration file:**
