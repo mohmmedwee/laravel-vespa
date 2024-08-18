@@ -9,20 +9,27 @@ use Illuminate\Support\Facades\Redis;
 
 class VespaClient
 {
+
     protected $vespaUrl;
     protected $plugins =  [];
-    protected $apiKey = config('vespa.api_key');
-    protected $language =  config('vespa.language');
-    protected $rateLimit = config('vespa.rate_limit'); // Max requests per minute
-    protected $rateLimitCacheKey = config('vespa.rate_limit');
-    protected $throttleLimit = config('vespa.throttle_limit'); // Max simultaneous requests
-    protected $throttleCacheKey =  config('vespa.throttle_limit');
+    protected $apiKey ;
+    protected $language;
+    protected $rateLimit;
+    protected $rateLimitCacheKey ;
+    protected $throttleLimit ;
+    protected $throttleCacheKey ;
 
     public function __construct()
     {
-        $this->vespaUrl = config('vespa.url');
-    }
 
+        $this->vespaUrl = config('vespa.url');
+        $this->apiKey = config('vespa.api_key');
+        $this->language =  config('vespa.language');
+        $this->rateLimit = config('vespa.rate_limit'); // Max requests per minute
+        $this->rateLimitCacheKey = config('vespa.rate_limit');
+        $this->throttleLimit = config('vespa.throttle_limit'); // Max simultaneous requests
+        $this->throttleCacheKey =  config('vespa.throttle_limit');
+    }
     // Plugin Registration
     public function registerPlugin($plugin, $priority = 0)
     {
